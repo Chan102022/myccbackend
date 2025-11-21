@@ -12,7 +12,7 @@ const JUDGE0_KEY = process.env.JUDGE0_KEY;
 
 // Forward request to Judge0
 async function forwardToJudge0(source_code, language_id, stdin = "") {
-  const r = await fetch(
+  const response = await fetch(
     `https://${JUDGE0_HOST}/submissions?base64_encoded=false&wait=true`,
     {
       method: "POST",
@@ -20,11 +20,13 @@ async function forwardToJudge0(source_code, language_id, stdin = "") {
         "X-RapidAPI-Key": JUDGE0_KEY,
         "X-RapidAPI-Host": JUDGE0_HOST,
         "Content-Type": "application/json",
+        "origin": "https://localhost" // ⭐ REQUIRED on Render
       },
       body: JSON.stringify({ source_code, language_id, stdin }),
     }
   );
-  return r.json();
+
+  return response.json();
 }
 
 // Compile endpoint
@@ -50,8 +52,7 @@ app.post("/compile", async (req, res) => {
   }
 });
 
-
-// Submit result endpoint (only compile check)
+// Submit result
 app.post("/submit-result", async (req, res) => {
   try {
     const { source_code, expectedOutput, language_id } = req.body;
@@ -85,6 +86,5 @@ app.post("/submit-result", async (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
-
