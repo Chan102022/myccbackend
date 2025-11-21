@@ -19,8 +19,7 @@ async function forwardToJudge0(source_code, language_id, stdin = "") {
       headers: {
         "X-RapidAPI-Key": JUDGE0_KEY,
         "X-RapidAPI-Host": JUDGE0_HOST,
-        "Content-Type": "application/json",
-        "origin": "https://localhost" // ⭐ REQUIRED on Render
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ source_code, language_id, stdin }),
     }
