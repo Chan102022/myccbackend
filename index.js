@@ -36,17 +36,20 @@ app.post("/compile", async (req, res) => {
       return res.status(400).json({ error: "Missing fields" });
     }
 
-    const result = await forwardToJudge0(
-      source_code,
-      language_id,
-      stdin || ""
-    );
+    const judge = await forwardToJudge0(source_code, language_id, stdin || "");
 
-    res.json(result);
+    res.json({
+      stdout: judge.stdout || "",
+      stderr: judge.stderr || judge.compile_output || "",
+      compile_output: judge.compile_output || ""
+    });
+
   } catch (err) {
+    console.log("Compile ERROR:", err);
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Submit result endpoint (only compile check)
 app.post("/submit-result", async (req, res) => {
